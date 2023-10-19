@@ -1,5 +1,9 @@
 {
   "name": "eg-dub",
+  "version": "0.0.1",
+  "bin": {
+    "eg": "index.mjs"
+  },
   "module": "index.ts",
   "type": "module",
   "devDependencies": {

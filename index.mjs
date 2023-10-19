@@ -1,4 +1,4 @@
-// OH HI again
+#!/usr/bin/env node
 import axios, { all } from "axios";
 import { promisify } from "util";
 import path from "path";
