@@ -1,15 +1,21 @@
 # eg-dub
 
-To install dependencies:
+To pack for installation:
 
 ```bash
-bun install
+npm pack
+```
+
+To install:
+
+```bash
+npm i -g eg-dub-cli-0.0.1.tgz
 ```
 
 To run:
 
 ```bash
-bun run index.ts
+eg deploy
 ```
 
-This project was created using `bun init` in bun v1.0.6. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.
+The last deploy time is stored in a `.engram` file.  If switching between machines, for now you'd have to delete this file to ensure any mismatched changes get overwritten.
