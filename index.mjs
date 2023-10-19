@@ -34,10 +34,6 @@ program.command("deploy").action(async () => {
       const filePath = path.join(dir, file);
       const fileStat = fs.statSync(filePath);
 
-      if (fileStat.mtimeMs < lastDeployMs) {
-        continue; // Skip files with mtimeMs older than the last deployment
-      }
-
       if ([".git", "node_modules", zipFilePath].includes(file)) {
         continue; // Skip .git, node_modules, and the target zip file
       }
@@ -46,7 +42,10 @@ program.command("deploy").action(async () => {
         // Recursively add files from subdirectories
         addFilesToTar(filePath, archive);
       } else {
-        // Add individual files to the archive
+        if (fileStat.mtimeMs < lastDeployMs) {
+          continue; // Skip files with mtimeMs older than the last deployment
+        }
+
         archive.push(filePath);
       }
     }
