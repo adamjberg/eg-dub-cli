@@ -24,8 +24,6 @@ program.command("deploy").action(async () => {
 
     addFilesToTar("./", allFiles);
 
-    console.log(allFiles);
-
     return allFiles;
   };
 
@@ -54,12 +52,18 @@ program.command("deploy").action(async () => {
     }
   };
 
+  const filesToDeploy = getFilesToTar();
+  if (!filesToDeploy.length) {
+    console.log("Nothing to deploy");
+    return;
+  }
+
   await tar.create(
     {
       gzip: true,
       file: zipFilePath,
     },
-    getFilesToTar()
+    filesToDeploy
   );
 
   const form = new FormData();
