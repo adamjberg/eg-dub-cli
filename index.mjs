@@ -1,6 +1,7 @@
 // OH HI again
-import axios from "axios";
+import axios, { all } from "axios";
 import { promisify } from "util";
+import path from "path";
 import fs from "fs";
 import tar from "tar";
 import FormData from "form-data";
@@ -18,29 +19,53 @@ program.command("deploy").action(async () => {
 
   const zipFilePath = "dist.tar.gz";
 
+  const getFilesToTar = () => {
+    let allFiles = [];
+
+    addFilesToTar("./", allFiles);
+
+    console.log(allFiles);
+
+    return allFiles;
+  };
+
+  const addFilesToTar = (dir, archive) => {
+    const files = fs.readdirSync(dir);
+
+    for (const file of files) {
+      const filePath = path.join(dir, file);
+      const fileStat = fs.statSync(filePath);
+
+      if (fileStat.mtimeMs < lastDeployMs) {
+        continue; // Skip files with mtimeMs older than the last deployment
+      }
+
+      if ([".git", "node_modules", zipFilePath].includes(file)) {
+        continue; // Skip .git, node_modules, and the target zip file
+      }
+
+      if (fileStat.isDirectory()) {
+        // Recursively add files from subdirectories
+        addFilesToTar(filePath, archive);
+      } else {
+        // Add individual files to the archive
+        archive.push(filePath);
+      }
+    }
+  };
+
   await tar.create(
     {
       gzip: true,
       file: zipFilePath,
-      filter: (path, stat) => {
-        if (stat.mtimeMs < lastDeployMs) {
-          return false;
-        }
-
-        if ([".git", "node_modules", zipFilePath].includes(path)) {
-          return false;
-        }
-
-        return true;
-      },
     },
-    ["./"]
+    getFilesToTar()
   );
 
   const form = new FormData();
   form.append("zipFile", fs.createReadStream(zipFilePath));
 
-  const url = "http://localhost:3000/api/deploy";
+  const url = "http://5.78.69.52:3000/api/deploy";
 
   const getLengthAsync = promisify(form.getLength.bind(form));
   const contentLength = await getLengthAsync();
