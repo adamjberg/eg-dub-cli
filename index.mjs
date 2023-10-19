@@ -27,7 +27,7 @@ program.command("deploy").action(async () => {
           return false;
         }
 
-        if (["node_modules", zipFilePath].includes(path)) {
+        if ([".git", "node_modules", zipFilePath].includes(path)) {
           return false;
         }
 
