@@ -3,12 +3,16 @@
   "module": "index.ts",
   "type": "module",
   "devDependencies": {
+    "@types/tar": "^6.1.7",
     "bun-types": "latest"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
   },
   "dependencies": {
-    "commander": "^11.1.0"
+    "axios": "^1.5.1",
+    "commander": "^11.1.0",
+    "form-data": "^4.0.0",
+    "tar": "^6.2.0"
   }
 }
